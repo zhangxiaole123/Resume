@@ -1,25 +1,19 @@
 <template>
 	<div class="center">
-		<div class="experience">
-			<span class="title">工作经验</span>
-			<div class="flex textColor">
-				<div>2018/4-至今</div>
-				<div>武汉佰钧成科技有限公司</div>
-				<div>信息技术部</div>
-				<div>WEB前端开发</div>
+		<div v-for="pitem in $appdata.workData" class="experience" >
+			<span class="title">{{pitem.name}}</span>
+			<div class="experience-item" v-for="item in pitem.ProjectData">
+				<div class="flex textColor">
+					<div>{{item.workYear}}</div>
+					<div>{{item.company}}</div>
+					<div>{{item.department}}</div>
+					<div>{{item.post}}</div>
+				</div>
+				<div class="des">{{item.desp}}</div>
 			</div>
-			<div class="des">艾斯德斯大撒所大多萨达所大大所多爱仕达大所多</div>
 		</div>
-		<div class="experience">
-			<span class="title">项目经验</span>
-			<div class="flex textColor">
-				<div>2018/4-至今</div>
-				<div>武汉佰钧成科技有限公司</div>
-				<div>信息技术部</div>
-				<div>WEB前端开发</div>
-			</div>
-			<div class="des">艾斯德斯大撒所大多萨达所大大所多爱仕达大所多</div>
-		</div>
+
+
 		
 		<div class="experience">
 			<span class="title">技能特长</span>
@@ -54,7 +48,8 @@
 				this.isTrue = !this.isTrue
 			},
 			mouseout(){
-				this.$appdata.leftEchartsData.series[0].data[0] = 0
+				// this.$appdata.leftEchartsData.series[0].data[0] = 0
+				this.$root.Bus.$emit('changeLeftEcharts',0)
 			}
 		},
 		mounted(){
@@ -63,10 +58,17 @@
 			let that = this;
 			window.addEventListener('resize',()=>{
 				that.centerCanvas.resize()
+
+				if(window.innerWidth <= 768 ){
+			       	that.$appdata.smail = true;
+			    }else{
+			    	that.$appdata.smail = false;
+			    }
 			})
 			this.centerCanvas.on('mouseover',(params)=>{
 				if(params.seriesType == 'bar'){
-					this.$appdata.leftEchartsData.series[0].data[0] = params.value
+					this.$root.Bus.$emit('changeLeftEcharts',params.value)
+					// this.$appdata.leftEchartsData.series[0].data[0] = params.value
 				}
 			})
 			
@@ -77,8 +79,14 @@
 	@import '../assets/scss/color.scss';
 	.center{
 		margin: 30px 0 0 $leftWidth;
-		padding:0 20px;
+		padding:0 30px;
+		min-width: 700px;
 	}
+	.smail .center{
+		margin: 60px 0 0 0;
+		overflow: hidden;
+	}
+
 	.experience{
 		margin-bottom: 20px;
 		position: relative;
@@ -96,13 +104,17 @@
 		}
 		.des{
 			margin-top: 10px;
+			font-size:0.875rem;
+		}
+		.experience-item{
+			margin-bottom:20px;
 		}
 	}
 	.switch{
 		width: 120px;
 	    position: relative;
 	    height: 30px;
-	    border: 1px solid #aaa;
+	    border: 1px solid $btnBgColor;
 	    line-height: 30px;
 	    border-radius: 40px;
 	    background: #eee;

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="smail?'smail':''">
     <!-- <router-view/> -->
     <Left></Left>
     <CenterBox></CenterBox>
@@ -17,8 +17,18 @@ export default {
   name: 'App',
   data(){
     return{
-      
+      smail:false
     }
+  },
+  mounted(){
+    let that = this;
+    window.addEventListener('resize',()=>{
+        if(window.innerWidth <= 768 ){
+            that.smail = true;
+        }else{
+            that.smail = false;
+        }
+    })
   }
 }
 </script>
